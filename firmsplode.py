@@ -6,6 +6,7 @@ from assemblyline.common.net import is_valid_domain, is_valid_email, is_valid_ip
 import binwalk
 import os
 import zipfile
+from retrying import retry
 
 
 class Firmsplode(ServiceBase):
@@ -26,8 +27,8 @@ class Firmsplode(ServiceBase):
 
     def execute(self, request):
         local = request.download()
-        al_result = Result()
 
+        al_result = Result()
 
         command = self.construct_command(request)
 
@@ -81,13 +82,11 @@ class Firmsplode(ServiceBase):
     def construct_command(self, request):
         cmd = {}
 
-
-
         cmd['signature'] = True
         cmd['entropy'] = True
         cmd['directory'] = self.working_directory
         cmd['extract'] = True
         cmd['quiet'] = True
+        cmd['disasm'] = True
 
         return cmd
-
